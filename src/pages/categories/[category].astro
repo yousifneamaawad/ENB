@@ -1,0 +1,58 @@
+---
+import Base from '../../layouts/Base.astro';
+import PostCard from '../../components/PostCard.astro';
+import {
+  getAllPosts,
+  postsByCategory,
+  summarizeCategories,
+  type CategorySummary,
+} from '../../utils/posts';
+import { withBase } from '../../utils/url';
+
+export async function getStaticPaths() {
+  const posts = await getAllPosts();
+  return summarizeCategories(posts).map((summary) => ({
+    params: { category: summary.slug },
+    props: { summary },
+  }));
+}
+
+interface Props {
+  summary: CategorySummary;
+}
+
+const { summary } = Astro.props;
+const categoryPosts = postsByCategory(await getAllPosts(), summary.slug);
+const latest = categoryPosts[0];
+---
+
+<Base title={summary.title} description={summary.description || undefined}>
+  <header class="page-header">
+    <p class="eyebrow">Category</p>
+    <h1>{summary.title}</h1>
+    {summary.description && <p class="desc">{summary.description}</p>}
+    <a class="mono-link" href={withBase(`/categories/${summary.slug}/rss.xml`)}>
+      RSS for this category →
+    </a>
+  </header>
+
+  {latest && (latest.data.book || latest.data.page != null) && (
+    <div class="reading-progress">
+      <span class="label">Latest entry</span>
+      <span class="value">
+        {latest.data.title}
+        {latest.data.page != null && <> — p. {latest.data.page}</>}
+      </span>
+      {latest.data.book && <span class="label">{latest.data.book}</span>}
+      <span class="label">
+        {categoryPosts.length} {categoryPosts.length === 1 ? 'entry' : 'entries'} so far
+      </span>
+    </div>
+  )}
+
+  <ul class="post-list">
+    {categoryPosts.map((post) => (
+      <PostCard post={post} showCategory={false} />
+    ))}
+  </ul>
+</Base>

@@ -1,0 +1,35 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getAllPosts, summarizeCategories } from '../../utils/posts';
+import { withBase } from '../../utils/url';
+
+const categories = summarizeCategories(await getAllPosts());
+---
+
+<Base
+  title="Categories"
+  description="Every category on the site, with entry counts."
+>
+  <header class="page-header">
+    <p class="eyebrow">Index</p>
+    <h1>Categories</h1>
+    <p class="desc">
+      Each category is its own thread. Start anywhere; new ones get added over
+      time.
+    </p>
+  </header>
+
+  <ul class="category-grid">
+    {categories.map((category) => (
+      <li>
+        <a class="category-card" href={withBase(`/categories/${category.slug}/`)}>
+          <h3>{category.title}</h3>
+          {category.description && <p>{category.description}</p>}
+          <span class="category-count">
+            {category.count} {category.count === 1 ? 'entry' : 'entries'}
+          </span>
+        </a>
+      </li>
+    ))}
+  </ul>
+</Base>

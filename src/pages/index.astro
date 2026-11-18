@@ -1,0 +1,60 @@
+---
+import Base from '../layouts/Base.astro';
+import PostCard from '../components/PostCard.astro';
+import { getAllPosts, summarizeCategories } from '../utils/posts';
+import { SITE } from '../data/site';
+import { withBase } from '../utils/url';
+
+const posts = await getAllPosts();
+const latest = posts.slice(0, 5);
+const categories = summarizeCategories(posts);
+---
+
+<Base title={SITE.title}>
+  <section class="hero">
+    <p class="eyebrow">Writing in public</p>
+    <h1>Ideas, reading notes, and works in progress.</h1>
+    <p class="lede">
+      This is where I think out loud: what I'm reading, building, and figuring out.
+      New categories appear as new interests do.
+    </p>
+  </section>
+
+  <section aria-labelledby="latest">
+    <div class="section-head">
+      <h2 id="latest">Latest</h2>
+      <a href={withBase('/writing/')}>All writing →</a>
+    </div>
+    {
+      latest.length > 0 ? (
+        <ul class="post-list">
+          {latest.map((post) => (
+            <PostCard post={post} />
+          ))}
+        </ul>
+      ) : (
+        <p class="empty-state">Nothing published yet — check back soon.</p>
+      )
+    }
+  </section>
+
+  <section aria-labelledby="categories">
+    <div class="section-head">
+      <h2 id="categories">Categories</h2>
+      <a href={withBase('/categories/')}>Browse →</a>
+    </div>
+    <ul class="category-grid">
+      {categories.map((category) => (
+        <li>
+          <a class="category-card" href={withBase(`/categories/${category.slug}/`)}>
+            <h3>{category.title}</h3>
+            {category.description && <p>{category.description}</p>}
+            <span class="category-count">
+              {category.count} {category.count === 1 ? 'entry' : 'entries'}
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+</Base>

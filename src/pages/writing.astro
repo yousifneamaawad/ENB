@@ -1,0 +1,44 @@
+---
+import Base from '../layouts/Base.astro';
+import PostCard from '../components/PostCard.astro';
+import { getAllPosts, type Post } from '../utils/posts';
+
+const posts = await getAllPosts();
+
+const byYear = new Map<string, Post[]>();
+for (const post of posts) {
+  const year = String(post.data.date.getUTCFullYear());
+  const list = byYear.get(year) ?? [];
+  list.push(post);
+  byYear.set(year, list);
+}
+const years = [...byYear.keys()].sort((a, b) => b.localeCompare(a));
+---
+
+<Base title="Writing" description="Every entry, newest first.">
+  <header class="page-header">
+    <p class="eyebrow">Archive</p>
+    <h1>Writing</h1>
+    <p class="desc">
+      Every entry across every category. Use the category pages to follow one
+      thread at a time.
+    </p>
+  </header>
+
+  {posts.length === 0 ? (
+    <p class="empty-state">No posts yet.</p>
+  ) : (
+    years.map((year) => (
+      <section aria-labelledby={`year-${year}`}>
+        <div class="section-head">
+          <h2 id={`year-${year}`}>{year}</h2>
+        </div>
+        <ul class="post-list">
+          {(byYear.get(year) ?? []).map((post) => (
+            <PostCard post={post} />
+          ))}
+        </ul>
+      </section>
+    ))
+  )}
+</Base>

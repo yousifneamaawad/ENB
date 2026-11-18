@@ -1,0 +1,18 @@
+---
+import { SITE } from '../data/site';
+import { withBase } from '../utils/url';
+---
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <p>
+      Written in public by {SITE.author}. No trackers, no cookies, no analytics —
+      just static files.
+    </p>
+    <ul class="footer-links">
+      <li><a href={withBase('/rss.xml')}>RSS</a></li>
+      <li><a href={withBase('/colophon/')}>Colophon</a></li>
+      <li><a href={withBase('/about/')}>About</a></li>
+    </ul>
+  </div>
+</footer>

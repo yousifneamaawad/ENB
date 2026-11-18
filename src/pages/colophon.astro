@@ -1,0 +1,51 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base
+  title="Colophon"
+  description="How this site is built, styled, and kept private."
+>
+  <header class="page-header">
+    <p class="eyebrow">Colophon</p>
+    <h1>How this site works</h1>
+  </header>
+
+  <div class="prose">
+    <h2>Stack</h2>
+    <ul>
+      <li><strong>Astro</strong> — static site generator; builds plain HTML/CSS from Markdown.</li>
+      <li><strong>Markdown + Git</strong> — every post is a file in the repo. Writing and site history live together.</li>
+      <li><strong>Cloudflare Pages</strong> — hosting and auto-deploy on push.</li>
+    </ul>
+
+    <h2>Design</h2>
+    <p>
+      Dark, technical theme with system fonts (no webfont downloads) and monospace
+      used for metadata. The accent color is a restrained sky blue. No client-side
+      JavaScript frameworks; the only script on the page is Astro's build output,
+      which is effectively none.
+    </p>
+
+    <h2>Privacy</h2>
+    <p>
+      There are no trackers, no cookies, no analytics, and no third-party embeds.
+      The site is static files: whatever the host logs server-side is out of my
+      control, but nothing is collected or rendered into the page itself.
+    </p>
+
+    <h2>Writing a post</h2>
+    <ol>
+      <li>Copy a template from <code>templates/</code> into <code>src/content/writing/&lt;category&gt;/</code>.</li>
+      <li>Fill in the frontmatter (<code>title</code>, <code>date</code>, <code>category</code>) and write.</li>
+      <li>Set <code>draft: false</code> when it's ready to publish.</li>
+      <li>Commit and push — the site rebuilds automatically.</li>
+    </ol>
+    <p>
+      To add a new category, create a folder under
+      <code>src/content/writing/</code> and add a title/description to
+      <code>src/data/categories.ts</code>. That's it — category pages and feeds
+      appear automatically.
+    </p>
+  </div>
+</Base>

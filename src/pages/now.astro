@@ -1,0 +1,42 @@
+---
+import Base from '../layouts/Base.astro';
+import { withBase } from '../utils/url';
+
+const updated = new Intl.DateTimeFormat('en-GB', {
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+}).format(new Date());
+---
+
+<Base title="Now" description="What I'm focused on right now.">
+  <header class="page-header">
+    <p class="eyebrow">Now</p>
+    <h1>What I'm doing now</h1>
+    <p class="desc">Last updated {updated}. This page changes as my focus does.</p>
+  </header>
+
+  <div class="prose">
+    <h2>Reading</h2>
+    <p>
+      Working through an AI book one page at a day. Notes land in the
+      <a href={withBase('/categories/ai-book-a-day/')}>AI Book, a Page a Day</a> category.
+    </p>
+
+    <h2>Building</h2>
+    <p>
+      Setting up this site: the writing workflow, categories, and feeds. Next up
+      is making the habit of publishing entries instead of saving drafts.
+    </p>
+
+    <h2>Learning</h2>
+    <p>How to write shorter, publish more often, and let ideas stay unfinished in public.</p>
+
+    <h2>Next</h2>
+    <ul>
+      <li>Add the first real entries to each category.</li>
+      <li>Connect a domain and deploy.</li>
+      <li>Decide whether search is worth adding.</li>
+    </ul>
+  </div>
+</Base>

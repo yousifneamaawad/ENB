@@ -1,0 +1,85 @@
+---
+import { render } from 'astro:content';
+import Base from './Base.astro';
+import {
+  adjacentPosts,
+  formatDate,
+  getAllPosts,
+  postPath,
+  postsByCategory,
+  type Post,
+} from '../utils/posts';
+import { categoryMeta } from '../data/categories';
+import { withBase } from '../utils/url';
+
+interface Props {
+  post: Post;
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const meta = categoryMeta(post.data.category);
+const categoryPosts = postsByCategory(await getAllPosts(), post.data.category);
+const { newer, older } = adjacentPosts(categoryPosts, post);
+---
+
+<Base title={post.data.title} description={post.data.description}>
+  <article>
+    <header class="post-header">
+      <div class="post-meta">
+        <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
+        <span class="meta-sep">·</span>
+        <a class="badge" href={withBase(`/categories/${post.data.category}/`)}>{meta.title}</a>
+        {
+          post.data.book && (
+            <>
+              <span class="meta-sep">·</span>
+              <span>{post.data.book}</span>
+            </>
+          )
+        }
+        {
+          post.data.page != null && (
+            <>
+              <span class="meta-sep">·</span>
+              <span>p. {post.data.page}</span>
+            </>
+          )
+        }
+      </div>
+      <h1>{post.data.title}</h1>
+      {post.data.tags.length > 0 && (
+        <ul class="tags">
+          {post.data.tags.map((tag) => (
+            <li class="tag">{tag}</li>
+          ))}
+        </ul>
+      )}
+    </header>
+
+    <div class="prose">
+      <Content />
+    </div>
+
+    {(newer || older) && (
+      <nav class="post-nav" aria-label="More from this category">
+        {newer ? (
+          <a href={postPath(newer)}>
+            <span class="dir">← Newer</span>
+            <span class="title">{newer.data.title}</span>
+          </a>
+        ) : (
+          <span />
+        )}
+        {older ? (
+          <a class="next" href={postPath(older)}>
+            <span class="dir">Older →</span>
+            <span class="title">{older.data.title}</span>
+          </a>
+        ) : (
+          <span />
+        )}
+      </nav>
+    )}
+  </article>
+</Base>

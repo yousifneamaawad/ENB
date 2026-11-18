@@ -1,0 +1,38 @@
+---
+import type { Post } from '../utils/posts';
+import { formatDate, postPath } from '../utils/posts';
+import { categoryMeta } from '../data/categories';
+import { withBase } from '../utils/url';
+
+interface Props {
+  post: Post;
+  showCategory?: boolean;
+}
+
+const { post, showCategory = true } = Astro.props;
+const meta = categoryMeta(post.data.category);
+---
+
+<li class="post-card">
+  <article>
+    <div class="post-meta">
+      <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
+      {showCategory && (
+        <>
+          <span class="meta-sep">·</span>
+          <a class="badge" href={withBase(`/categories/${post.data.category}/`)}>{meta.title}</a>
+        </>
+      )}
+      {post.data.page != null && (
+        <>
+          <span class="meta-sep">·</span>
+          <span>p. {post.data.page}</span>
+        </>
+      )}
+    </div>
+    <h3 class="post-title">
+      <a href={postPath(post)}>{post.data.title}</a>
+    </h3>
+    {post.data.description && <p class="post-desc">{post.data.description}</p>}
+  </article>
+</li>
